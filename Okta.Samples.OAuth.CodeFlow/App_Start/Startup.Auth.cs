@@ -19,89 +19,127 @@ using IdentityModel.Client;
 using System;
 using System.Security.Claims;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Okta.Samples.OAuth.CodeFlow
 {
-    public partial class Startup
-    {
-        public void ConfigureAuth(IAppBuilder app)
-        {
-            string oktaOAuthClientId = ConfigurationManager.AppSettings["okta:OauthClientId"] as string;
-            string oidcClientSecret = ConfigurationManager.AppSettings["okta:OAuthClientSecret"];
-            string oidcAuthority = ConfigurationManager.AppSettings["okta:OAuthAuthority"] as string;
-            string oidcRedirectUri = ConfigurationManager.AppSettings["okta:OAuthRedirectUri"] as string;
-            string oidcResponseType = ConfigurationManager.AppSettings["okta:OAuthResponseType"] as string;
-            string oauthScopes = ConfigurationManager.AppSettings["okta:OAuthScopes"];
+	public class OAuthConfig
+	{
+		public OAuthConfig(string oidcAuthority, 
+			string clientId, 
+			string clientSecret, 
+			string oidcRedirectUri,
+			string oidcResponseType, 
+			string scopes)
+		{
+			OidcAuthority = oidcAuthority;
+			ClientId = clientId;
+			ClientSecret = clientSecret;
+			OidcRedirectUri = oidcRedirectUri;
+			OidcResponseType = oidcResponseType;
+			Scopes = scopes;
+		}
 
-            app.UseCookieAuthentication(new CookieAuthenticationOptions
-            {
-                AuthenticationType = "Cookies"
-            });
+		public string OidcAuthority { get; }
+		public string ClientId { get; }
+		public string ClientSecret { get; }
+		public string OidcRedirectUri { get; }
+		public string OidcResponseType { get; }
+		public string Scopes { get; }
+	}
 
-            app.UseOpenIdConnectAuthentication(new OpenIdConnectAuthenticationOptions
-            {
-                ClientId = oktaOAuthClientId,
-                Authority = oidcAuthority,
-                RedirectUri = oidcRedirectUri,
-                ResponseType = oidcResponseType,
-                Scope = oauthScopes,
+	public partial class Startup
+	{
+		public void ConfigureAuth(IAppBuilder app)
+		{
+			var oAuthConfig = new OAuthConfig(
+				ConfigurationManager.AppSettings["okta:OAuthAuthority"],
+				ConfigurationManager.AppSettings["okta:OauthClientId"],
+				ConfigurationManager.AppSettings["okta:OAuthClientSecret"], 
+				ConfigurationManager.AppSettings["okta:OAuthRedirectUri"], 
+				ConfigurationManager.AppSettings["okta:OAuthResponseType"], 
+				ConfigurationManager.AppSettings["okta:OAuthScopes"]
+			);
 
-                SignInAsAuthenticationType = "Cookies",
-                UseTokenLifetime = true,
+			app.UseCookieAuthentication(new CookieAuthenticationOptions
+			{
+				AuthenticationType = "Cookies"
+			});
 
-                Notifications = new OpenIdConnectAuthenticationNotifications
-                {
-                    AuthorizationCodeReceived = async n =>
-                    {
-                        // use the code to get the access and refresh token
-                        var tokenClient = new TokenClient(
-                            oidcAuthority + Constants.TokenEndpoint,
-                            oktaOAuthClientId,
-                            oidcClientSecret, AuthenticationStyle.BasicAuthentication);
+			app.UseOpenIdConnectAuthentication(new OpenIdConnectAuthenticationOptions
+			{
+				ClientId = oAuthConfig.ClientId,
+				Authority = oAuthConfig.OidcAuthority,
+				RedirectUri = oAuthConfig.OidcRedirectUri,
+				ResponseType = oAuthConfig.OidcResponseType,
+				Scope = oAuthConfig.Scopes,
 
-                        TokenResponse tokenResponse = await tokenClient.RequestAuthorizationCodeAsync(
-                            n.Code, 
-                            n.RedirectUri);
+				SignInAsAuthenticationType = "Cookies",
+				UseTokenLifetime = true,
 
-                        if (tokenResponse.IsError)
-                        {
-                            throw new Exception(tokenResponse.Error);
-                        }
+				Notifications = new OpenIdConnectAuthenticationNotifications
+				{
+					AuthorizationCodeReceived = async n =>
+					{
+						// use the code to get the access and refresh token
+						var tokenResponse = await GetTokenResponse(oAuthConfig, n.Code, n.RedirectUri);
 
-                        // use the access token to retrieve claims from userinfo
-                        var userInfoClient = new UserInfoClient(
-                            new Uri(oidcAuthority + Constants.UserInfoEndpoint), 
-                            tokenResponse.AccessToken);
+						// use the access token to retrieve claims from userinfo
+						var userInfoClient = new UserInfoClient(
+							new Uri(oAuthConfig.OidcAuthority + Constants.UserInfoEndpoint),
+							tokenResponse.AccessToken);
 
-                        var userInfoResponse = await userInfoClient.GetAsync();
+						var userInfoResponse = await userInfoClient.GetAsync();
 
-                        //// create new identity
-                        var id = new ClaimsIdentity(n.AuthenticationTicket.Identity.AuthenticationType);
-                        //adding the claims we get from the userinfo endpoint
-                        var idClaims = userInfoResponse.GetClaimsIdentity();
-                        id.AddClaims(idClaims.Claims);
+						//// create new identity
+						var id = new ClaimsIdentity(n.AuthenticationTicket.Identity.AuthenticationType);
+						//adding the claims we get from the userinfo endpoint
+						var idClaims = userInfoResponse.GetClaimsIdentity();
+						id.AddClaims(idClaims.Claims);
 
-                        //also adding the ID, Access and Refresh tokens to the user claims 
-                        id.AddClaim(new Claim("id_token", n.ProtocolMessage.IdToken));
-                        id.AddClaim(new Claim("access_token", tokenResponse.AccessToken));
-                        if(tokenResponse.RefreshToken != null)
-                            id.AddClaim(new Claim("refresh_token", tokenResponse.RefreshToken));
+						//also adding the ID, Access and Refresh tokens to the user claims 
+						id.AddClaim(new Claim("id_token", n.ProtocolMessage.IdToken));
+						id.AddClaim(new Claim("access_token", tokenResponse.AccessToken));
+						if (tokenResponse.RefreshToken != null)
+							id.AddClaim(new Claim("refresh_token", tokenResponse.RefreshToken));
 
-                        id.AddClaim(new Claim("expires_at", DateTime.Now.AddSeconds(tokenResponse.ExpiresIn).ToLocalTime().ToString()));
-                        if (tokenResponse.RefreshToken != null)
-                        {
-                            id.AddClaim(new Claim("refresh_token", tokenResponse.RefreshToken));
-                        }
+						id.AddClaim(new Claim("expires_at", DateTime.Now.AddSeconds(tokenResponse.ExpiresIn).ToLocalTime().ToString()));
+						if (tokenResponse.RefreshToken != null)
+						{
+							id.AddClaim(new Claim("refresh_token", tokenResponse.RefreshToken));
+						}
 
-                        // Make sure the Name claim is populated (for Identity.Name)
-                        var nameClaim = new Claim(ClaimTypes.Name, idClaims.Claims.FirstOrDefault(c => c.Type == "name")?.Value);
-                        id.AddClaim(nameClaim);
+						// Make sure the Name claim is populated (for Identity.Name)
+						var nameClaim = new Claim(ClaimTypes.Name, idClaims.Claims.FirstOrDefault(c => c.Type == "name")?.Value);
+						id.AddClaim(nameClaim);
 
-                        n.AuthenticationTicket = new AuthenticationTicket(new ClaimsIdentity(id.Claims, n.AuthenticationTicket.Identity.AuthenticationType),
-                            n.AuthenticationTicket.Properties);
-                    },
-                }
-            });
-        }
-    }
+						n.AuthenticationTicket = new AuthenticationTicket(
+							new ClaimsIdentity(id.Claims, n.AuthenticationTicket.Identity.AuthenticationType),
+							n.AuthenticationTicket.Properties);
+					},
+				}
+			});
+		}
+
+		private static async Task<TokenResponse> GetTokenResponse(
+			OAuthConfig oAuthConfig, 
+			string code, 
+			string redirectUri)
+		{
+			var tokenClient = new TokenClient(
+				oAuthConfig.OidcAuthority + Constants.TokenEndpoint,
+				oAuthConfig.ClientId,
+				oAuthConfig.ClientSecret);
+
+			TokenResponse tokenResponse = await tokenClient.RequestAuthorizationCodeAsync(
+				code,
+				redirectUri);
+
+			if (tokenResponse.IsError)
+			{
+				throw new Exception(tokenResponse.Error);
+			}
+			return tokenResponse;
+		}
+	}
 }
