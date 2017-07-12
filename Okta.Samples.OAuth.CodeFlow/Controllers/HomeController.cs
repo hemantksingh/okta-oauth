@@ -42,7 +42,9 @@ namespace Okta.Samples.OAuth.CodeFlow.Controllers
 
         public ActionResult SignOut()
         {
-            Request.GetOwinContext().Authentication.SignOut(OpenIdConnectAuthenticationDefaults.AuthenticationType, CookieAuthenticationDefaults.AuthenticationType);
+            Request.GetOwinContext().Authentication.SignOut(
+                OpenIdConnectAuthenticationDefaults.AuthenticationType, 
+                CookieAuthenticationDefaults.AuthenticationType);
 
             return View();
         }

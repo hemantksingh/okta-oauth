@@ -59,7 +59,9 @@ namespace Okta.Samples.OAuth.CodeFlow
                             oktaOAuthClientId,
                             oidcClientSecret, AuthenticationStyle.BasicAuthentication);
 
-                        var tokenResponse = await tokenClient.RequestAuthorizationCodeAsync(n.Code, n.RedirectUri);
+                        TokenResponse tokenResponse = await tokenClient.RequestAuthorizationCodeAsync(
+                            n.Code, 
+                            n.RedirectUri);
 
                         if (tokenResponse.IsError)
                         {
@@ -67,7 +69,9 @@ namespace Okta.Samples.OAuth.CodeFlow
                         }
 
                         // use the access token to retrieve claims from userinfo
-                        var userInfoClient = new UserInfoClient(new Uri(oidcAuthority + Constants.UserInfoEndpoint), tokenResponse.AccessToken);
+                        var userInfoClient = new UserInfoClient(
+                            new Uri(oidcAuthority + Constants.UserInfoEndpoint), 
+                            tokenResponse.AccessToken);
 
                         var userInfoResponse = await userInfoClient.GetAsync();
 
