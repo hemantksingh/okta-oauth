@@ -20,6 +20,7 @@ using System;
 using System.Security.Claims;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Owin.Security.Notifications;
 
 namespace Okta.Samples.OAuth.CodeFlow
 {
@@ -79,46 +80,48 @@ namespace Okta.Samples.OAuth.CodeFlow
 
 				Notifications = new OpenIdConnectAuthenticationNotifications
 				{
-					AuthorizationCodeReceived = async n =>
+					AuthorizationCodeReceived = async authCodeReceived =>
 					{
 						// use the code to get the access and refresh token
-						var tokenResponse = await GetTokenResponse(oAuthConfig, n.Code, n.RedirectUri);
+						TokenResponse tokenResponse = await GetTokenResponse(oAuthConfig, 
+							authCodeReceived.Code, 
+							authCodeReceived.RedirectUri);
 
 						// use the access token to retrieve claims from userinfo
-						var userInfoClient = new UserInfoClient(
-							new Uri(oAuthConfig.OidcAuthority + Constants.UserInfoEndpoint),
-							tokenResponse.AccessToken);
+						UserInfoResponse userInfoResponse = await new UserInfoClient(
+								new Uri(oAuthConfig.OidcAuthority + Constants.UserInfoEndpoint),
+								tokenResponse.AccessToken)
+							.GetAsync();
 
-						var userInfoResponse = await userInfoClient.GetAsync();
+						var identity = CreateIdentity(userInfoResponse, authCodeReceived, tokenResponse);
 
-						//// create new identity
-						var id = new ClaimsIdentity(n.AuthenticationTicket.Identity.AuthenticationType);
-						//adding the claims we get from the userinfo endpoint
-						var idClaims = userInfoResponse.GetClaimsIdentity();
-						id.AddClaims(idClaims.Claims);
-
-						//also adding the ID, Access and Refresh tokens to the user claims 
-						id.AddClaim(new Claim("id_token", n.ProtocolMessage.IdToken));
-						id.AddClaim(new Claim("access_token", tokenResponse.AccessToken));
-						if (tokenResponse.RefreshToken != null)
-							id.AddClaim(new Claim("refresh_token", tokenResponse.RefreshToken));
-
-						id.AddClaim(new Claim("expires_at", DateTime.Now.AddSeconds(tokenResponse.ExpiresIn).ToLocalTime().ToString()));
-						if (tokenResponse.RefreshToken != null)
-						{
-							id.AddClaim(new Claim("refresh_token", tokenResponse.RefreshToken));
-						}
-
-						// Make sure the Name claim is populated (for Identity.Name)
-						var nameClaim = new Claim(ClaimTypes.Name, idClaims.Claims.FirstOrDefault(c => c.Type == "name")?.Value);
-						id.AddClaim(nameClaim);
-
-						n.AuthenticationTicket = new AuthenticationTicket(
-							new ClaimsIdentity(id.Claims, n.AuthenticationTicket.Identity.AuthenticationType),
-							n.AuthenticationTicket.Properties);
-					},
+						authCodeReceived.AuthenticationTicket = new AuthenticationTicket(
+							identity,
+							authCodeReceived.AuthenticationTicket.Properties);
+					}
 				}
 			});
+		}
+
+		private static ClaimsIdentity CreateIdentity(
+			UserInfoResponse userInfoResponse, 
+			AuthorizationCodeReceivedNotification authCodeReceived,
+			TokenResponse tokenResponse)
+		{
+			var identity = new ClaimsIdentity(
+				userInfoResponse.GetClaimsIdentity().Claims,
+				authCodeReceived.AuthenticationTicket.Identity.AuthenticationType);
+
+			identity.AddClaim(new Claim("id_token", authCodeReceived.ProtocolMessage.IdToken));
+			identity.AddClaim(new Claim("access_token", tokenResponse.AccessToken));
+			identity.AddClaim(new Claim("expires_at", DateTime.Now.AddSeconds(tokenResponse.ExpiresIn).ToLocalTime().ToString()));
+			if (tokenResponse.RefreshToken != null)
+				identity.AddClaim(new Claim("refresh_token", tokenResponse.RefreshToken));
+
+			var nameClaim = new Claim(ClaimTypes.Name,
+				userInfoResponse.GetClaimsIdentity().Claims.FirstOrDefault(c => c.Type == "name")?.Value);
+			identity.AddClaim(nameClaim);
+			return identity;
 		}
 
 		private static async Task<TokenResponse> GetTokenResponse(
