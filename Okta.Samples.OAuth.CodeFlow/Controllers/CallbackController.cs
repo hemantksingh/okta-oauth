@@ -32,6 +32,7 @@ namespace Okta.Samples.OAuth.CodeFlow.Controllers
         {
             return View();
         }
+
         [HttpPost]
         public async Task<ActionResult> Index(FormCollection form)
         {
@@ -94,15 +95,12 @@ namespace Okta.Samples.OAuth.CodeFlow.Controllers
 
         private async Task<TokenResponse> GetTokenFromAuthServer()
         {
-            string oidcClientId = ConfigurationManager.AppSettings["okta:OAuthClientId"];
-            string oidcClientSecret = ConfigurationManager.AppSettings["okta:OAuthClientSecret"];
-            string oktaTenantUrl = ConfigurationManager.AppSettings["okta:OAuthAuthority"];
-            string oidcRedirectUrl = ConfigurationManager.AppSettings["okta:OAuthRedirectUri"];
+            var oAuthConfig = Startup.GetOAuthConfig();
 
             var client = new TokenClient(
-                oktaTenantUrl + Constants.TokenEndpoint,
-                oidcClientId,
-                oidcClientSecret,
+                oAuthConfig.OidcAuthority + Constants.TokenEndpoint,
+                oAuthConfig.ClientId,
+                oAuthConfig.ClientSecret,
                 AuthenticationStyle.PostValues);
 
             var code = Request.Form["code"];
@@ -111,7 +109,7 @@ namespace Okta.Samples.OAuth.CodeFlow.Controllers
 
             var response = await client.RequestAuthorizationCodeAsync(
                 code,
-                oidcRedirectUrl);
+                oAuthConfig.OidcRedirectUri);
 
             await ValidateResponseAndSignInAsync(response);
 

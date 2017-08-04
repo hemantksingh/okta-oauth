@@ -29,30 +29,43 @@ namespace Api
             var config = new HttpConfiguration();
             config.EnableSystemDiagnosticsTracing();
 
-            var clientID = WebConfigurationManager.AppSettings["okta:ClientId"];
+            var clientId = WebConfigurationManager.AppSettings["okta:ClientId"];
             var tenantUrl = WebConfigurationManager.AppSettings["okta:TenantUrl"];
 
-            var tvps = new TokenValidationParameters
+	        app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions
             {
-                ValidAudience = tenantUrl,
-                ValidateAudience = true,
-                ValidIssuer = tenantUrl,
-                ValidateIssuer = true,
-            };
-
-            var additionalTokenValidationParamters = new Dictionary<string, string>()
-            {
-                // Validate Client ID claim
-                ["cid"] = clientID
-            };
-
-            var securityTokenProvider = new OpenIdConnectCachingSecurityTokenProvider(tenantUrl + "/.well-known/openid-configuration");
-            var jwtFormat = new CustomValidatingJwtFormat(tvps, additionalTokenValidationParamters, securityTokenProvider);
-
-            app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions
-            {
-                AccessTokenFormat = jwtFormat
+                AccessTokenFormat = GetAccessTokenFormat(tenantUrl, clientId)
             });
         }
+
+		/// <summary>
+		/// Specifies validation options for the access token.
+		/// </summary>
+		/// <param name="tenantUrl"></param>
+		/// <param name="clientId"></param>
+		/// <returns></returns>
+	    private static CustomValidatingJwtFormat GetAccessTokenFormat(string tenantUrl, string clientId)
+	    {
+		    var tokenValidationParameters = new TokenValidationParameters
+		    {
+			    ValidAudience = tenantUrl,
+			    ValidateAudience = true,
+			    ValidIssuer = tenantUrl,
+			    ValidateIssuer = true,
+		    };
+
+		    var additionalTokenValidationParamters = new Dictionary<string, string>
+		    {
+			    // Validate Client ID claim
+			    ["cid"] = clientId
+		    };
+
+		    var securityTokenProvider = new OpenIdConnectCachingSecurityTokenProvider(
+			    tenantUrl + "/.well-known/openid-configuration");
+
+		    return new CustomValidatingJwtFormat(tokenValidationParameters,
+			    additionalTokenValidationParamters,
+			    securityTokenProvider);
+	    }
     }
 }
