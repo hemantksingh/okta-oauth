@@ -12,11 +12,9 @@ namespace Api
     /// </summary>
     internal class CustomValidatingJwtFormat : JwtFormat, ISecureDataFormat<AuthenticationTicket>
     {
-        private readonly TokenValidationParameters _tvps;
-        private readonly IReadOnlyDictionary<string, string> _additionalTokenValidationParamters;
-        private readonly OpenIdConnectCachingSecurityTokenProvider _securityTokenProvider;
+	    private readonly IReadOnlyDictionary<string, string> _additionalTokenValidationParamters;
 
-        public CustomValidatingJwtFormat(
+	    public CustomValidatingJwtFormat(
             TokenValidationParameters tvps, 
             IReadOnlyDictionary<string, string> additionalTokenValidationParamters,
             OpenIdConnectCachingSecurityTokenProvider securityTokenProvider)
@@ -27,9 +25,7 @@ namespace Api
                 _additionalTokenValidationParamters = new Dictionary<string, string>();
             }
 
-            _tvps = tvps;
-            _additionalTokenValidationParamters = additionalTokenValidationParamters;
-            _securityTokenProvider = securityTokenProvider;
+	        _additionalTokenValidationParamters = additionalTokenValidationParamters;
         }
 
         public new AuthenticationTicket Unprotect(string protectedText)

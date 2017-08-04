@@ -25,14 +25,12 @@ namespace Api
         public ConfigurationManager<OpenIdConnectConfiguration> _configManager;
         private string _issuer;
         private IEnumerable<SecurityToken> _tokens;
-        private readonly string _metadataEndpoint;
 
-        private readonly ReaderWriterLockSlim _synclock = new ReaderWriterLockSlim();
+	    private readonly ReaderWriterLockSlim _synclock = new ReaderWriterLockSlim();
 
         public OpenIdConnectCachingSecurityTokenProvider(string metadataEndpoint)
         {
-            _metadataEndpoint = metadataEndpoint;
-            _configManager = new ConfigurationManager<OpenIdConnectConfiguration>(metadataEndpoint);
+	        _configManager = new ConfigurationManager<OpenIdConnectConfiguration>(metadataEndpoint);
 
             RetrieveMetadata();
         }

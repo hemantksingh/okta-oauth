@@ -55,7 +55,6 @@ namespace Okta.Samples.OAuth.CodeFlow
 
 		public ClaimsIdentity CreateIdentity(TokenResponse tokenResponse,
 			UserInfoResponse userInfoResponse,
-			string idToken,
 			string authenticationType)
 		{
 			_logger.WriteInformation($"Creating identity authenticationType: '{authenticationType}'");
@@ -87,7 +86,6 @@ namespace Okta.Samples.OAuth.CodeFlow
 
 			return CreateIdentity(tokenResponse,
 				userInfoResponse,
-				tokenResponse.IdentityToken,
 				authenticationType);
 		}
 	}
