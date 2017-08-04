@@ -88,6 +88,16 @@ namespace Okta.Samples.OAuth.CodeFlow
 				userInfoResponse,
 				authenticationType);
 		}
+
+		public async Task<TokenResponse> GetToken(string clientId, string clientSecret)
+		{
+			_logger.WriteInformation($"Getting token for clientId: '{clientId}'");
+			var tokenClient = new TokenClient(
+				_config.OidcAuthority + "/oauth2/v1/token",
+				clientId,
+				clientSecret);
+			return await tokenClient.RequestClientCredentialsAsync();
+		}
 	}
 
 	public class OAuthConfig

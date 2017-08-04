@@ -1,0 +1,21 @@
+version: 1.0.{build}
+branches:
+  only:
+    - master
+skip_commits:
+  message: /Updated.*\.(md)/
+
+image: Visual Studio 2015
+
+before_build:
+- cmd: nuget restore
+build:
+  verbosity: minimal
+  
+environment:
+  OAUTH_CLIENTID:
+    secure: 5fD1d6Y1j/YTMZEg/eh2wxiNb2lDoObksT5LYxhXDO4=
+  OAUTH_CLIENTSECRET:
+    secure: bSkDXFV6HneYsKUlfEXibTIm9TGecEuwRfuBccrFNww3vCe4SlVr67tHIeilwkmd
+  OAUTH_AUTHORITY:
+    secure: XzBoi61+k8/lwT/F0Q55r4aZQ8hstE7sb0rouFXNsySrwst+0mP1ibG/DfWuChW0
