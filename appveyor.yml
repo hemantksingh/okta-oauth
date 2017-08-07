@@ -18,8 +18,8 @@ build:
   verbosity: minimal
 
 artifacts:
-  -path: Okta.OAuth.CodeFlow.zip
-   name: OktaAuth-1.0.{build}
+  - path: Okta.OAuth.CodeFlow.zip
+    name: OktaAuth-1.0.{build}
 
 deploy:
   - provider: WebDeploy
