@@ -17,6 +17,10 @@ build:
   publish_wap: true
   verbosity: minimal
 
+artifacts:
+  -path: Okta.OAuth.CodeFlow.zip
+   name: OktaAuth-1.0.{build}
+
 deploy:
   - provider: WebDeploy
     server: "https://dev-pricing.westeurope.cloudapp.azure.com:8172/MsDeploy.axd"
