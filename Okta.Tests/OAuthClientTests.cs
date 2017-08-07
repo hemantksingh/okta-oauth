@@ -1,7 +1,5 @@
 ﻿using Okta.Samples.OAuth.CodeFlow;
 using System;
-using System.Threading.Tasks;
-using IdentityModel.Client;
 using NUnit.Framework;
 
 namespace Okta.Tests
@@ -9,20 +7,24 @@ namespace Okta.Tests
     public class OAuthClientTests
     {
 	    [Test]
-	    public void CreatesAuthTokenForClientFlow()
+	    public void CannotGetAcessTokenWithClientCredentialsFlowForUnauthorizedClient()
 	    {
-		    var oAuthConfig = new OAuthConfig(Environment.GetEnvironmentVariable("OAUTH_AUTHORITY"),
+		    var oAuthConfig = new OAuthConfig(
+				Environment.GetEnvironmentVariable("OAUTH_AUTHORITY"),
 			    Environment.GetEnvironmentVariable("OAUTH_CLIENTID"),
 			    Environment.GetEnvironmentVariable("OAUTH_CLIENTSECRET"),
-			    "",
-			    "",
+			    "https://some-callback-url",
+			    "token",
 			    "openid email");
 
 		    var client = new OAuthClient(oAuthConfig);
 
-		    Task<TokenResponse> token = client.GetToken(oAuthConfig.ClientId, oAuthConfig.ClientSecret);
-		
-			Assert.IsNotNull(token.Result);
-	    }
-    }
+		    var exception = Assert.CatchAsync<InvalidOperationException>(() =>
+			    client.GetTokenClientCredentials(
+				    oAuthConfig.ClientId,
+				    oAuthConfig.ClientSecret));
+
+		    Assert.That(exception.Message, Is.EqualTo("unauthorized_client"));
+		}
+	}
 }

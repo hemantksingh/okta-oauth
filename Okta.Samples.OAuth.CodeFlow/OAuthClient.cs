@@ -18,20 +18,22 @@ namespace Okta.Samples.OAuth.CodeFlow
 			_config = config;
 		}
 
-		public async Task<TokenResponse> GetToken(
+		public async Task<TokenResponse> GetTokenAuthorizationCode(
 			string authCode,
 			string redirectUri, 
 			AuthenticationStyle authenticationStyle = AuthenticationStyle.BasicAuthentication)
 		{
-			_logger.WriteInformation($"Getting token for authCode: '{authCode}' " +
-			                         $"redirectUri: '{redirectUri}' " +
-									 $" & authenticationStyle: '{authenticationStyle}'");
-
+			var uri = _config.OidcAuthority + "/oauth2/v1/token";
+			
 			var tokenClient = new TokenClient(
-				_config.OidcAuthority + "/oauth2/v1/token",
+				uri,
 				_config.ClientId,
 				_config.ClientSecret,
 				authenticationStyle);
+
+			_logger.WriteInformation($"Getting token from uri: '{uri}' " +
+			                         $"redirectUri: '{redirectUri}' " +
+			                         $" & authenticationStyle: '{authenticationStyle}'");
 
 			TokenResponse tokenResponse = await tokenClient.RequestAuthorizationCodeAsync(
 				authCode,
@@ -40,7 +42,7 @@ namespace Okta.Samples.OAuth.CodeFlow
 			if (!tokenResponse.IsError) return tokenResponse;
 
 			_logger.WriteError(tokenResponse.Error);
-			throw new Exception(tokenResponse.Error);
+			throw new InvalidOperationException(tokenResponse.Error);
 		}
 
 		public async Task<UserInfoResponse> GetUser(string accessToken)
@@ -81,7 +83,7 @@ namespace Okta.Samples.OAuth.CodeFlow
 			string redirectUri,
 			string authenticationType)
 		{
-			TokenResponse tokenResponse = await GetToken(authCode, redirectUri);
+			TokenResponse tokenResponse = await GetTokenAuthorizationCode(authCode, redirectUri);
 			UserInfoResponse userInfoResponse = await GetUser(tokenResponse.AccessToken);
 
 			return CreateIdentity(tokenResponse,
@@ -89,14 +91,20 @@ namespace Okta.Samples.OAuth.CodeFlow
 				authenticationType);
 		}
 
-		public async Task<TokenResponse> GetToken(string clientId, string clientSecret)
+		public async Task<TokenResponse> GetTokenClientCredentials(string clientId, string clientSecret)
 		{
-			_logger.WriteInformation($"Getting token for clientId: '{clientId}'");
+			var uri = _config.OidcAuthority + "/oauth2/v1/token";
 			var tokenClient = new TokenClient(
-				_config.OidcAuthority + "/oauth2/v1/token",
+				uri,
 				clientId,
 				clientSecret);
-			return await tokenClient.RequestClientCredentialsAsync();
+			_logger.WriteInformation($"Requesting token from : '{uri}'");
+
+			var tokenResponse = await tokenClient.RequestClientCredentialsAsync();
+			if (!tokenResponse.IsError) return tokenResponse;
+
+			_logger.WriteError(tokenResponse.Error);
+			throw new InvalidOperationException(tokenResponse.Error);
 		}
 	}
 
@@ -109,6 +117,10 @@ namespace Okta.Samples.OAuth.CodeFlow
 			string oidcResponseType,
 			string scopes)
 		{
+			Ensure.ArgumentNonNullOrEmpty(oidcAuthority, "oidcAuthority");
+			Ensure.ArgumentNonNullOrEmpty(clientId, "clientId");
+			Ensure.ArgumentNonNullOrEmpty(clientSecret, "clientSecret");
+
 			OidcAuthority = oidcAuthority;
 			ClientId = clientId;
 			ClientSecret = clientSecret;
@@ -124,4 +136,14 @@ namespace Okta.Samples.OAuth.CodeFlow
 		public string OidcResponseType { get; }
 		public string Scopes { get; }
 	}
+
+	public class Ensure
+	{
+		public static void ArgumentNonNullOrEmpty(string value, string name)
+		{
+			if(string.IsNullOrWhiteSpace(value))
+				throw new ArgumentException($"'{name}' cannot be null or empty.");
+		}
+	}
 }
+

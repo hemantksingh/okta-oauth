@@ -15,25 +15,17 @@ To get this sample running, follow these instructions:
 
 ### Application setup
 1. Open the solution in Visual Studio 2015 (or later).
-2. In the Web.config file for the CodeFlow project, edit these values:
+2. Export the following environment variables.
 
-| Property | Change to: |
-| -------- | ----------- |
-| **okta:OAuthClientId** | The client ID from the Client Credentials section of your Okta application |
-| **okta:OauthClientSecret** | The client secret from the Client Credentials section of your Okta application |
-| **okta:OAuthAuthority** | The URL of your Okta organization (such as `https://dev-12345.oktapreview.com`) |
+| Environment variable | Change to: |
+| -------------------- | ----------- |
+| **OAUTH_CLIENTID** | The client ID from the Client Credentials section of your Okta application |
+| **OAUTH_CLIENTSECRET** | The client secret from the Client Credentials section of your Okta application |
+| **OAUTH_AUTHORITY** | The URL of your Okta organization (such as `https://dev-12345.oktapreview.com`) |
 
 > :bulb: The org URL should have the format `dev-*.oktapreview.com`. Make sure you don't copy the `dev-*-admin` URL!
 
-3. Next, open the Web.config file for the Api project and edit these values:
-
-| Property | Change to: |
-| -------- | ----------- |
-| **okta:ClientId** | The client ID from the Client Credentials section of your Okta application |
-| **okta:TenantUrl** | The URL of your Okta organization (such as `https://dev-12345.oktapreview.com`) |
-
-
-4. Right-click on the CodeFlow project and select **Set as startup project**.
+3. Right-click on the CodeFlow project and select **Set as startup project**.
 0. Choose Rebuild All to build the solution and restore any missing packages.
 0. Run the solution. It should open the sample web application at https://localhost:44327. The Api project (a sample resource server) will also start up at https://localhost:44316.
 0. Click on **Sign in with OpenID Connect** and sign in with your test user Okta credentials.

@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.Security.Claims;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
@@ -53,10 +54,10 @@ namespace Okta.Samples.OAuth.CodeFlow
 	    public static OAuthConfig GetOAuthConfig()
 	    {
 		    var oAuthConfig = new OAuthConfig(
-			    ConfigurationManager.AppSettings["okta:OAuthAuthority"],
-			    ConfigurationManager.AppSettings["okta:OauthClientId"],
-			    ConfigurationManager.AppSettings["okta:OAuthClientSecret"],
-			    ConfigurationManager.AppSettings["okta:OAuthRedirectUri"],
+				Environment.GetEnvironmentVariable("OAUTH_AUTHORITY"),
+				Environment.GetEnvironmentVariable("OAUTH_CLIENTID"),
+				Environment.GetEnvironmentVariable("OAUTH_CLIENTSECRET"),
+				ConfigurationManager.AppSettings["okta:OAuthRedirectUri"],
 			    ConfigurationManager.AppSettings["okta:OAuthResponseType"],
 			    ConfigurationManager.AppSettings["okta:OAuthScopes"]
 		    );

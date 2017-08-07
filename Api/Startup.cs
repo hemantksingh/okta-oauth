@@ -10,12 +10,12 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
+using System;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.OAuth;
 using Owin;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens;
-using System.Web.Configuration;
 using System.Web.Http;
 
 [assembly: OwinStartup(typeof(Api.Startup))]
@@ -29,8 +29,8 @@ namespace Api
             var config = new HttpConfiguration();
             config.EnableSystemDiagnosticsTracing();
 
-            var clientId = WebConfigurationManager.AppSettings["okta:ClientId"];
-            var tenantUrl = WebConfigurationManager.AppSettings["okta:TenantUrl"];
+            var clientId = Environment.GetEnvironmentVariable("OAUTH_CLIENTID");
+	        var tenantUrl = Environment.GetEnvironmentVariable("OAUTH_AUTHORITY");
 
 	        app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions
             {
