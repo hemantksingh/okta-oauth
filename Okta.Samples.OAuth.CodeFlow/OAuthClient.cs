@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using IdentityModel.Client;
 using Microsoft.Owin.Logging;
@@ -53,42 +51,6 @@ namespace Okta.Samples.OAuth.CodeFlow
 			);
 
 			return await client.GetAsync();
-		}
-
-		public ClaimsIdentity CreateIdentity(TokenResponse tokenResponse,
-			UserInfoResponse userInfoResponse,
-			string authenticationType)
-		{
-			_logger.WriteInformation($"Creating identity authenticationType: '{authenticationType}'");
-
-			var identity = new ClaimsIdentity(
-				userInfoResponse.GetClaimsIdentity().Claims,
-				authenticationType);
-			var expiresAt = DateTime.Now.AddSeconds(tokenResponse.ExpiresIn).ToLocalTime().ToString();
-
-			identity.AddClaim(new Claim("id_token", tokenResponse.IdentityToken));
-			identity.AddClaim(new Claim("access_token", tokenResponse.AccessToken));
-			identity.AddClaim(new Claim("expires_at", expiresAt));
-
-			if (!string.IsNullOrWhiteSpace(tokenResponse.RefreshToken))
-				identity.AddClaim(new Claim("refresh_token", tokenResponse.RefreshToken));
-
-			var nameClaim = new Claim(ClaimTypes.Name,
-				userInfoResponse.GetClaimsIdentity().Claims.FirstOrDefault(c => c.Type == "name")?.Value);
-			identity.AddClaim(nameClaim);
-			return identity;
-		}
-
-		public async Task<ClaimsIdentity> GetIdentity(string authCode,
-			string redirectUri,
-			string authenticationType)
-		{
-			TokenResponse tokenResponse = await GetTokenAuthorizationCode(authCode, redirectUri);
-			UserInfoResponse userInfoResponse = await GetUser(tokenResponse.AccessToken);
-
-			return CreateIdentity(tokenResponse,
-				userInfoResponse,
-				authenticationType);
 		}
 
 		public async Task<TokenResponse> GetTokenClientCredentials(string clientId, string clientSecret)
