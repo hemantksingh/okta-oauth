@@ -13,7 +13,7 @@ install:
 before_build:
 - cmd: nuget restore
 build:
-  project: Okta.Samples.oAuth.CodeFlow.sln
+  project: Okta.OAuth.CodeFlow.sln
   publish_wap: true
   verbosity: minimal
 
@@ -27,10 +27,10 @@ deploy:
     ntlm: false
     remove_files: false
     app_offline: false
-    do_not_use_checksum: true           # do not use check sum for comparing source and destination files. By default checksums are used.
-    sync_retry_attempts: 2              # sync attempts, max
+    do_not_use_checksum: true
+    sync_retry_attempts: 2
     sync_retry_interval: 2000
-    artifact: okta-auth.zip           # timeout between sync attempts, milliseconds
+    artifact: Okta.OAuth.CodeFlow.zip
 
 environment:
   OAUTH_CLIENTID:
