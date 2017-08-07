@@ -3,7 +3,7 @@ using System.Linq;
 using System.Security.Claims;
 using IdentityModel.Client;
 
-namespace Okta.Samples.OAuth.CodeFlow
+namespace Okta.OAuth.CodeFlow
 {
 	public class Identity
 	{

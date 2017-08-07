@@ -1,4 +1,4 @@
-﻿using Okta.Samples.OAuth.CodeFlow;
+﻿using Okta.OAuth.CodeFlow;
 using System;
 using NUnit.Framework;
 

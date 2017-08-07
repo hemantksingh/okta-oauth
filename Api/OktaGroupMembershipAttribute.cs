@@ -78,7 +78,7 @@ namespace Api
                                 isAuthorized = false;
                             }
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
                         }
 

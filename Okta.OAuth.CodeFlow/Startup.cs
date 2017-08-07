@@ -7,9 +7,9 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OpenIdConnect;
 using Owin;
 
-[assembly: OwinStartup(typeof(Okta.Samples.OAuth.CodeFlow.Startup))]
+[assembly: OwinStartup(typeof(Okta.OAuth.CodeFlow.Startup))]
 
-namespace Okta.Samples.OAuth.CodeFlow
+namespace Okta.OAuth.CodeFlow
 {
 	public class Startup
 	{
@@ -38,10 +38,9 @@ namespace Okta.Samples.OAuth.CodeFlow
 					{
 						var client = new OAuthClient(oAuthConfig);
 
-						TokenResponse tokenResponse =
-							await client.GetTokenAuthorizationCode(
-								authCodeReceived.Code, 
-								authCodeReceived.RedirectUri);
+						TokenResponse tokenResponse = await client.GetTokenAuthorizationCode(
+							authCodeReceived.Code,
+							authCodeReceived.RedirectUri);
 						UserInfoResponse userInfoResponse = await client.GetUser(tokenResponse.AccessToken);
 
 						authCodeReceived.AuthenticationTicket = new AuthenticationTicket(

@@ -1,4 +1,4 @@
-﻿namespace Okta.Samples.OAuth.CodeFlow
+﻿namespace Okta.OAuth.CodeFlow
 {
     internal class Constants
     {

@@ -71,9 +71,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Okta.Samples.OAuth.CodeFlow\Okta.Samples.OAuth.CodeFlow.csproj">
+    <ProjectReference Include="..\Okta.OAuth.CodeFlow\Okta.OAuth.CodeFlow.csproj">
       <Project>{8d55c09e-77ea-43ad-a70d-004b040b5a63}</Project>
-      <Name>Okta.Samples.OAuth.CodeFlow</Name>
+      <Name>Okta.OAuth.CodeFlow</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

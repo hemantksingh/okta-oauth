@@ -10,7 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "Api\Api.csproj", "{8D050E03-FF24-404E-8E5D-10AD9CB27B02}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Okta.Samples.OAuth.CodeFlow", "Okta.Samples.OAuth.CodeFlow\Okta.Samples.OAuth.CodeFlow.csproj", "{8D55C09E-77EA-43AD-A70D-004B040B5A63}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Okta.OAuth.CodeFlow", "Okta.OAuth.CodeFlow\Okta.OAuth.CodeFlow.csproj", "{8D55C09E-77EA-43AD-A70D-004B040B5A63}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Licenses", "Licenses", "{1236EB01-198D-4118-BDCB-C2192368C9AD}"
 	ProjectSection(SolutionItems) = preProject

@@ -6,7 +6,7 @@ using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
 
-namespace Okta.Samples.OAuth.CodeFlow.Controllers
+namespace Okta.OAuth.CodeFlow.Controllers
 {
     public class AppController : Controller
     {

@@ -2,7 +2,7 @@
 using System.Web.Optimization;
 using System.Web.Routing;
 
-namespace Okta.Samples.OAuth.CodeFlow
+namespace Okta.OAuth.CodeFlow
 {
     public class MvcApplication : System.Web.HttpApplication
     {

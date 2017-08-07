@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using IdentityModel.Client;
 using Microsoft.Owin.Logging;
 
-namespace Okta.Samples.OAuth.CodeFlow
+namespace Okta.OAuth.CodeFlow
 {
 	public class OAuthClient
 	{

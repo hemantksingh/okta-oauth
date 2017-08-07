@@ -1,7 +1,7 @@
 ﻿using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace Okta.Samples.OAuth.CodeFlow
+namespace Okta.OAuth.CodeFlow
 {
     public class RouteConfig
     {

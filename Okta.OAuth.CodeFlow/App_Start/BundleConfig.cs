@@ -1,6 +1,6 @@
 ﻿using System.Web.Optimization;
 
-namespace Okta.Samples.OAuth.CodeFlow
+namespace Okta.OAuth.CodeFlow
 {
     public class BundleConfig
     {
