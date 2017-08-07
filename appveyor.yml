@@ -7,11 +7,31 @@ skip_commits:
 
 image: Visual Studio 2015
 
+install:
+  - ps: choco install make -y
+
 before_build:
 - cmd: nuget restore
 build:
+  project: Okta.Samples.oAuth.CodeFlow.sln
+  publish_wap: true
   verbosity: minimal
-  
+
+deploy:
+  - provider: WebDeploy
+    server: "https://dev-pricing.westeurope.cloudapp.azure.com:8172/MsDeploy.axd"
+    website: OktaAuth
+    username: agent-deploy
+    password:
+      secure: JgjViYedUd5IyB5V8dmwzPCt5qAAmxjM5fDd/ZZKAGc=
+    ntlm: false
+    remove_files: false
+    app_offline: false
+    do_not_use_checksum: true           # do not use check sum for comparing source and destination files. By default checksums are used.
+    sync_retry_attempts: 2              # sync attempts, max
+    sync_retry_interval: 2000
+    artifact: okta-auth.zip           # timeout between sync attempts, milliseconds
+
 environment:
   OAUTH_CLIENTID:
     secure: 5fD1d6Y1j/YTMZEg/eh2wxiNb2lDoObksT5LYxhXDO4=
