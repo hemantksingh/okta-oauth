@@ -16,8 +16,9 @@ build:
   project: Okta.OAuth.CodeFlow.sln
   publish_wap: true
   verbosity: minimal
-on_success:
-  - ps: '& "trigger.ps1 -project okta-auth-deployment -apiToken $env.API_TOKEN"'
+
+deploy_script:
+  - ps: . .\trigger.ps1 -project okta-auth-deployment -apiToken $env.API_TOKEN
 
 environment:
   OAUTH_CLIENTID:
