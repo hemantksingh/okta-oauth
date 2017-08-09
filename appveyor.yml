@@ -7,34 +7,17 @@ skip_commits:
 
 image: Visual Studio 2015
 
-install:
-  - ps: choco install make -y
+# install:
+#   - ps: choco install make -y
 
 before_build:
-- cmd: nuget restore
+  - cmd: nuget restore
 build:
   project: Okta.OAuth.CodeFlow.sln
   publish_wap: true
   verbosity: minimal
-
-artifacts:
-  - path: Okta.OAuth.CodeFlow.zip
-    name: OktaAuth-1.0.{build}
-
-deploy:
-  - provider: WebDeploy
-    server: "https://dev-pricing.westeurope.cloudapp.azure.com:8172/MsDeploy.axd"
-    website: OktaAuth
-    username: agent-deploy
-    password:
-      secure: JgjViYedUd5IyB5V8dmwzPCt5qAAmxjM5fDd/ZZKAGc=
-    ntlm: false
-    remove_files: false
-    app_offline: false
-    do_not_use_checksum: true
-    sync_retry_attempts: 2
-    sync_retry_interval: 2000
-    artifact: Okta.OAuth.CodeFlow.zip
+after_build:
+  - ps: trigger.ps1 -project okta-auth-deployment -apiToken $env.API_TOKEN
 
 environment:
   OAUTH_CLIENTID:
@@ -43,3 +26,5 @@ environment:
     secure: bSkDXFV6HneYsKUlfEXibTIm9TGecEuwRfuBccrFNww3vCe4SlVr67tHIeilwkmd
   OAUTH_AUTHORITY:
     secure: XzBoi61+k8/lwT/F0Q55r4aZQ8hstE7sb0rouFXNsySrwst+0mP1ibG/DfWuChW0
+  API_TOKEN:
+    secure: K+Xh6Wc8vsAuJqeqdlNKh8ie7E1prS/yJ3XFQyGuHI8=
