@@ -3,8 +3,10 @@ param (
   [string]$project
 )
 
+$apiToken = $env:API_TOKEN
+
 $headers = @{
-  "Authorization" = "Bearer $env.API_TOKEN"
+  "Authorization" = "Bearer $apiToken"
   "Content-type" = "application/json"
 }
 
