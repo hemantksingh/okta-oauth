@@ -1,9 +1,9 @@
 param (
   [Parameter(mandatory=$true)]
-  [string]$project
+  [string]$project,
+  [Parameter(mandatory=$true)]
+  [string]$apiToken
 )
-
-$apiToken = $env:API_TOKEN
 
 $headers = @{
   "Authorization" = "Bearer $apiToken"

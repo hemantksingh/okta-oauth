@@ -18,7 +18,7 @@ build:
   verbosity: minimal
 
 deploy_script:
-  - ps: . .\trigger.ps1 -project okta-oauth-deployment
+  - ps: . .\trigger.ps1 -project okta-oauth-deployment -apiToken $env:API_TOKEN
 
 environment:
   OAUTH_CLIENTID:
