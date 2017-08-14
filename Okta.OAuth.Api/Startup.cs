@@ -18,9 +18,9 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens;
 using System.Web.Http;
 
-[assembly: OwinStartup(typeof(Api.Startup))]
+[assembly: OwinStartup(typeof(Okta.OAuth.Api.Startup))]
 
-namespace Api
+namespace Okta.OAuth.Api
 {
     public class Startup
     {

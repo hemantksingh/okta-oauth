@@ -7,9 +7,6 @@ skip_commits:
 
 image: Visual Studio 2015
 
-# install:
-#   - ps: choco install make -y
-
 before_build:
   - cmd: nuget restore
 build:

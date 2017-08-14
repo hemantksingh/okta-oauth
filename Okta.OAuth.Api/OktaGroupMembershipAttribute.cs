@@ -20,7 +20,7 @@ using System.Security.Claims;
 using System.Threading;
 using System.Web.Http.Controllers;
 
-namespace Api
+namespace Okta.OAuth.Api
 {
     public class OktaGroupAuthorizeAttribute : System.Web.Http.AuthorizeAttribute
     {

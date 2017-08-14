@@ -1,7 +1,7 @@
 ﻿using System.Web.Http;
 
 
-namespace Api
+namespace Okta.OAuth.Api
 {
     public class WebApiApplication : System.Web.HttpApplication
     {

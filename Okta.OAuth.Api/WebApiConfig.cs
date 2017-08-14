@@ -12,7 +12,7 @@
 
 using System.Web.Http;
 
-namespace Api
+namespace Okta.OAuth.Api
 {
     public static class WebApiConfig
     {

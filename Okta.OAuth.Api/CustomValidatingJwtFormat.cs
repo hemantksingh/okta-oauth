@@ -5,7 +5,7 @@ using System;
 using System.Linq;
 using System.IdentityModel.Tokens;
 
-namespace Api
+namespace Okta.OAuth.Api
 {
     /// <summary>
     /// Extends <see cref="JwtFormat"/> to allow validation of any claim.

@@ -16,7 +16,7 @@ using System.IdentityModel.Tokens;
 using Microsoft.IdentityModel.Protocols;
 using System.Threading;
 
-namespace Api
+namespace Okta.OAuth.Api
 {
     // This class is necessary because the OAuthBearer Middleware does not leverage
     // the OpenID Connect metadata endpoint exposed by the STS by default.

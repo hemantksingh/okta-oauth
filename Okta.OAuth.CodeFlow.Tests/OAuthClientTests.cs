@@ -2,7 +2,7 @@
 using System;
 using NUnit.Framework;
 
-namespace Okta.Tests
+namespace Okta.OAuth.CodeFlow.Tests
 {
     public class OAuthClientTests
     {

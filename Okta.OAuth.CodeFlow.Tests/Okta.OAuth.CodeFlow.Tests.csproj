@@ -7,8 +7,8 @@
     <ProjectGuid>{0550267C-A804-4C38-BF87-5AEE4E3F2DC6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Okta.Tests</RootNamespace>
-    <AssemblyName>Okta.Tests</AssemblyName>
+    <RootNamespace>Okta.OAuth.CodeFlow.Tests</RootNamespace>
+    <AssemblyName>Okta.OAuth.CodeFlow.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

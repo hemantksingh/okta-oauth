@@ -1,14 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.15
+VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{65DCED10-3AEB-4297-8C71-4DFA0BB50391}"
 	ProjectSection(SolutionItems) = preProject
 		Readme.md = Readme.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "Api\Api.csproj", "{8D050E03-FF24-404E-8E5D-10AD9CB27B02}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Okta.OAuth.Api", "Okta.OAuth.Api\Okta.OAuth.Api.csproj", "{8D050E03-FF24-404E-8E5D-10AD9CB27B02}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Okta.OAuth.CodeFlow", "Okta.OAuth.CodeFlow\Okta.OAuth.CodeFlow.csproj", "{8D55C09E-77EA-43AD-A70D-004B040B5A63}"
 EndProject
@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Licenses", "Licenses", "{12
 		THIRD_PARTY_NOTICES = THIRD_PARTY_NOTICES
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Okta.Tests", "Okta.Tests\Okta.Tests.csproj", "{0550267C-A804-4C38-BF87-5AEE4E3F2DC6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Okta.OAuth.CodeFlow.Tests", "Okta.OAuth.CodeFlow.Tests\Okta.OAuth.CodeFlow.Tests.csproj", "{0550267C-A804-4C38-BF87-5AEE4E3F2DC6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
