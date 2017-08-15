@@ -149,6 +149,7 @@
     <Compile Include="Controllers\AppController.cs" />
     <Compile Include="Controllers\CallApiController.cs" />
     <Compile Include="Controllers\CallbackController.cs" />
+    <Compile Include="Controllers\HealthController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
