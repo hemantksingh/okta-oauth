@@ -8,6 +8,8 @@ skip_commits:
 image: Visual Studio 2015
 
 before_build:
+  - ps: ./update-version.ps1 Okta.OAuth.CodeFlow $env:APPVEYOR_BUILD_NUMBER
+  - ps: ./update-version.ps1 Okta.OAuth.Api $env:APPVEYOR_BUILD_NUMBER
   - cmd: nuget restore
 build:
   project: Okta.OAuth.CodeFlow.sln
