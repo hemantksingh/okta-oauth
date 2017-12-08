@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using IdentityModel.Client;
 using Microsoft.Owin.Logging;
@@ -67,6 +68,18 @@ namespace Okta.OAuth.CodeFlow
 
 			_logger.WriteError(tokenResponse.Error);
 			throw new InvalidOperationException(tokenResponse.Error);
+		}
+
+		public async Task<string> GetAuthorizationCode(string clientId)
+		{
+			using (var client = new HttpClient {BaseAddress = new Uri(_config.OidcAuthority)})
+			{
+				var uri = $"/oauth2/v1/authorize?client_id={_config.ClientId}&response_type={_config.OidcResponseType}";
+
+				Console.WriteLine("invoking:" + _config.OidcAuthority + uri);
+				var response = await client.GetAsync(uri);
+				return await response.Content.ReadAsStringAsync();
+			}
 		}
 	}
 

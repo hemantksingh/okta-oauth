@@ -1,5 +1,6 @@
 ﻿using Okta.OAuth.CodeFlow;
 using System;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace Okta.OAuth.CodeFlow.Tests
@@ -14,7 +15,7 @@ namespace Okta.OAuth.CodeFlow.Tests
 			    Environment.GetEnvironmentVariable("OAUTH_CLIENTID"),
 			    Environment.GetEnvironmentVariable("OAUTH_CLIENTSECRET"),
 			    "https://some-callback-url",
-			    "token",
+			    "code",
 			    "openid email");
 
 		    var client = new OAuthClient(oAuthConfig);
@@ -26,5 +27,23 @@ namespace Okta.OAuth.CodeFlow.Tests
 
 		    Assert.That(exception.Message, Is.EqualTo("unauthorized_client"));
 		}
+
+		[Test]
+	    public void GetAsuthorizationCode()
+	    {
+			var oAuthConfig = new OAuthConfig(
+			    Environment.GetEnvironmentVariable("OAUTH_AUTHORITY"),
+			    Environment.GetEnvironmentVariable("OAUTH_CLIENTID"),
+			    Environment.GetEnvironmentVariable("OAUTH_CLIENTSECRET"),
+			    "https://some-callback-url",
+			    "code",
+			    "openid email");
+
+		    var client = new OAuthClient(oAuthConfig);
+
+		    var task = client.GetAuthorizationCode(oAuthConfig.ClientId);
+
+		    Console.WriteLine(task.Result);
+	    }
 	}
 }
