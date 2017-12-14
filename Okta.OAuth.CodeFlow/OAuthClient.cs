@@ -99,6 +99,62 @@ namespace Okta.OAuth.CodeFlow
 		public string Scopes { get; }
 	}
 
+	public class OAuthConfigBuilder
+	{
+		private string _oAuthAuthority;
+		private string _clientId;
+		private string _clientSecret;
+		private string _redirectUri;
+		private string _responseType;
+		private string _scopes;
+
+		public OAuthConfigBuilder OAuthAuthority(string oAuthAuthority)
+		{
+			_oAuthAuthority = oAuthAuthority;
+			return this;
+		}
+
+		public OAuthConfigBuilder ClientId(string clientId)
+		{
+			_clientId = clientId;
+			return this;
+		}
+
+		public OAuthConfigBuilder ClientSecret(string clientSecret)
+		{
+			_clientSecret = clientSecret;
+			return this;
+		}
+
+		public OAuthConfigBuilder RedirectUri(string redirectUri)
+		{
+			_redirectUri = redirectUri;
+			return this;
+		}
+
+		public OAuthConfigBuilder ResponseType(string responseType)
+		{
+			_responseType = responseType;
+			return this;
+		}
+
+		public OAuthConfigBuilder Scopes(string scopes)
+		{
+			_scopes = scopes;
+			return this;
+		}
+
+		public OAuthConfig Build()
+		{
+			return new OAuthConfig(_oAuthAuthority,
+			 _clientId,
+			 _clientSecret,
+			 _redirectUri,
+			 _responseType,
+			 _scopes);
+		}
+	}
+
 	public class Ensure
 	{
 		public static void ArgumentNonNullOrEmpty(string value, string name)

@@ -9,15 +9,17 @@ namespace Okta.OAuth.CodeFlow.Tests
 	    [Test]
 	    public void CannotGetAcessTokenWithClientCredentialsFlowForUnauthorizedClient()
 	    {
-		    var oAuthConfig = new OAuthConfig(
-				Environment.GetEnvironmentVariable("OAUTH_AUTHORITY"),
-			    Environment.GetEnvironmentVariable("OAUTH_CLIENTID"),
-			    Environment.GetEnvironmentVariable("OAUTH_CLIENTSECRET"),
-			    "https://some-callback-url",
-			    "token",
-			    "openid email");
+		    
+			var oAuthConfig = new OAuthConfigBuilder()
+			    .OAuthAuthority(Environment.GetEnvironmentVariable("OAUTH_AUTHORITY"))
+			    .ClientId(Environment.GetEnvironmentVariable("OAUTH_CLIENTID"))
+			    .ClientSecret(Environment.GetEnvironmentVariable("OAUTH_CLIENTSECRET"))
+			    .RedirectUri("https://some-callback-url")
+			    .ResponseType("token")
+			    .Scopes("openid email")
+			    .Build();
 
-		    var client = new OAuthClient(oAuthConfig);
+			var client = new OAuthClient(oAuthConfig);
 
 		    var exception = Assert.CatchAsync<InvalidOperationException>(() =>
 			    client.GetTokenClientCredentials(
